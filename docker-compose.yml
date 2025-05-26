@@ -1,50 +1,39 @@
-version: "3.8"
-
-services:
-  app:
-    build: .
-    ports:
-      - "5500:5500"
+services:  
+  php-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - .:/app
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_NAME=tubes_task_management
+      # Mount ke /var/www/html
+      - ./vol:/var/www/html
     depends_on:
-      - db
+      - mysql-db
+    ports:
+      - 5500:5500
 
-
-  db:
-    container_name: mysql_container
-    image: mysql:8.0
-    networks:
-      - mysql_network
-    restart: always
+  # MYSQL
+  mysql-db:
+    image: mysql:latest
     environment:
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: tubes_task_management
+      MYSQL_ROOT_PASSWORD: php_mysql_pass
+      MYSQL_USER: admin    
+      MYSQL_DATABASE: Group4-WebsitePringgading
+      MYSQL_PASSWORD: admin123
     ports:
+      # post mysql
       - "5501:5501"
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./mysql_conf/my.cnf:/etc/mysql/conf.d/my.cnf:ro
 
+  # PHPMYADMIN
   phpmyadmin:
-    container_name: phpmyadmin_container
-    image: phpmyadmin/phpmyadmin
-    restart: always
+    image: phpmyadmin:latest
+    links:
+      # akses ke database
+      - mysql-db
     ports:
+      # port mysql-db
       - "5502:5502"
     environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: 
-
-volumes:
-  db_data:
-    driver: local
-
-networks:
-  mysql_network:
-    driver: bridge
+      # Phpmyadmin jadi host database
+      PMA_HOST: mysql-db
+      # Password
+      MYSQL_ROOT_PASSWORD: php_mysql_pass
