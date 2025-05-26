@@ -24,7 +24,13 @@ jobs:
                     echo "Konek ke server..."
                     
                     echo "masuk ke folder test-cicd..."
-                    cd /home/afadfath/tubes_mkepl
+                    
+                    if [ ! -d "/home/afadfath/tubes_mkepl/.git" ]; then
+                      git clone https://github.com/afadfath/tubes_mkepl.git /home/afadfath/tubes_mkepl
+                    else
+                      cd /home/afadfath/tubes_mkepl
+                      git pull
+                    fi
                     
                     echo "docker compse down if running..."
                     docker compose down
