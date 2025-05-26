@@ -17,7 +17,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: php_mysql_pass
       MYSQL_USER: admin    
-      MYSQL_DATABASE: Group4-WebsitePringgading
+      MYSQL_DATABASE: mkepl_task-management
       MYSQL_PASSWORD: admin123
     ports:
       # post mysql
