@@ -23,7 +23,6 @@ COPY . /var/www/html/
 COPY ./mysql_conf/database.sql /docker-entrypoint-initdb.d/init.sql
 
 # Install supervisord untuk menjalankan dua service
-RUN apt-get install -y supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80 5500
