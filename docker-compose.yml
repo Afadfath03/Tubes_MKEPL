@@ -22,7 +22,8 @@ services:
       - mysql_network
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: tubes_task_management
     ports:
       - "5501:5501"
