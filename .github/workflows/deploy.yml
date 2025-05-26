@@ -22,16 +22,16 @@ jobs:
                 password: "${{ secrets.SERVER_PASSWORD }}"
                 script: |
                     echo "Konek ke server..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S -u root bash
+                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo su -S
                     
                     echo "masuk ke folder Tubes_MKEPL..."
                     cd /home/afadfath/Tubes_MKEPL
 
                     echo "Check apakah branch sesuai..."
-                    git config --global --add safe.directory /home/afadfath/Tubes_MKEPL
+                    sudo git config --global --add safe.directory /home/afadfath/Tubes_MKEPL
+                    
                     echo "Pull kode terbaru dari repository..."
-
-                    git pull
+                    sudo git pull
 
                     echo "Cek isi folder..."
                     ls -la
