@@ -27,7 +27,9 @@ jobs:
                     cd /home/afadfath/Tubes_MKEPL
 
                     echo "Check apakah branch sesuai..."
+                    git config --global --add safe.directory /home/afadfath/Tubes_MKEPL
                     echo "Pull kode terbaru dari repository..."
+
                     git pull
 
                     echo "Cek isi folder..."
