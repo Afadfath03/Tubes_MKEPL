@@ -28,17 +28,16 @@ jobs:
 
                     echo "Check apakah branch sesuai..."
                     echo "Pull kode terbaru dari repository..."
-                    git pull origin master
+                    git pull
 
                     echo "Cek isi folder..."
                     ls -la
                     
-                    
-                    echo "docker compse down if running..."
-                    docker compose down
+                    # echo "docker compse down if running..."
+                    # docker compose down
 
-                    echo "docker compose up..."
-                    docker compose up -d
+                    # echo "docker compose up..."
+                    # docker compose up -d
 
                     # # CI (Continuous Integration) untuk database
                     # echo "Menunggu MySQL untuk siap..."

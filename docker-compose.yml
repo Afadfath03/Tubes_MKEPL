@@ -43,6 +43,7 @@ services:
 
 volumes:
   db_data:
+    driver: local
 
 networks:
   mysql_network:
