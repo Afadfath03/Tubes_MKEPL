@@ -14,7 +14,12 @@ services:
     depends_on:
       - db
 
+
   db:
+    container_name: mysql_container
+    image: mysql:8.0
+    networks:
+      - mysql_network
     image: mysql:8.0
     restart: always
     environment:
@@ -24,8 +29,10 @@ services:
       - "5501:5501"
     volumes:
       - db_data:/var/lib/mysql
+      - ./mysql_conf/my.cnf:/etc/mysql/conf.d/my.cnf:ro
 
   phpmyadmin:
+    container_name: phpmyadmin_container
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
@@ -36,3 +43,7 @@ services:
 
 volumes:
   db_data:
+
+networks:
+  mysql_network:
+    driver: bridge
