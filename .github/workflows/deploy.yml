@@ -32,7 +32,7 @@ jobs:
                         echo "Branch saat ini adalah $current_branch, bukan master. Proses deploy dibatalkan."
                         exit 1
                     else
-                        echo "Branch saat ini adalah $current_branch, melanjutkan proses deploy..."
+                        echo "Branch saat ini adalah $current_branch..."
                     fi
 
                     echo "Pull kode terbaru dari repository..."
