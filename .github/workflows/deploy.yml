@@ -3,7 +3,7 @@ name: Tubes_Deploy
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
     deploy:
@@ -19,43 +19,43 @@ jobs:
               with:
                 host: ${{ secrets.SERVER_HOST }}
                 username: ${{ secrets.SERVER_USERNAME }}
-                password: ${{ secrets.SERVER_PASSWORD }}
+                password: "${{ secrets.SERVER_PASSWORD }}"
                 script: |
                     echo "Konek ke server..."
                     
                     echo "masuk ke folder test-cicd..."
-                    cd /home/afad/test-cicd
+                    cd /home/afadfath/tubes_mkepl
                     
                     echo "docker compse down if running..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose down
+                    docker compose down
 
                     echo "docker compose up..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose up -d
+                    docker compose up -d
 
-                    # CI (Continuous Integration) untuk database
-                    echo "Menunggu MySQL untuk siap..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S sleep 10
+                    # # CI (Continuous Integration) untuk database
+                    # echo "Menunggu MySQL untuk siap..."
+                    # sleep 10
                     
-                    echo "cek container mysql_devel..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
+                    # echo "cek container mysql_devel..."
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
 
-                    # Init database development
-                    echo "Inisialisasi database development..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin_devel; USE db_admin_devel;"
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));"
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "INSERT INTO users (name) VALUES ('Afad Fath');"
+                    # # Init database development
+                    # echo "Inisialisasi database development..."
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin_devel; USE db_admin_devel;"
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));"
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "INSERT INTO users (name) VALUES ('Afad Fath');"
 
-                    echo "Cek database di development..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysql -u root -padmin123 -e "USE db_admin_devel; SHOW TABLES;"
+                    # echo "Cek database di development..."
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
+                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "USE db_admin_devel; SHOW TABLES;"
 
-                    # CD (Continuous Deployment) untuk database
-                    echo "Dump database dari development..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_devel_container mysqldump -u root -padmin123 --databases db_admin_devel > /home/afadfath/test-cicd/db_admin_devel.sql
+                    # # CD (Continuous Deployment) untuk database
+                    # echo "Dump database dari development..."
+                    # docker exec mysql_devel_container mysqldump -u root -padmin123 --databases db_admin_devel > /home/afadfath/test-cicd/db_admin_devel.sql
                     
-                    echo "Copy dump file ke server production..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker cp /home/afadfath/test-cicd/db_admin_devel.sql mysql_prod_container:/tmp/db_admin.sql
+                    # echo "Copy dump file ke server production..."
+                    # docker cp /home/afadfath/test-cicd/db_admin_devel.sql mysql_prod_container:/tmp/db_admin.sql
 
-                    echo "Import dump ke database production..."
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_prod_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin; SHOW DATABASES; USE db_admin;"
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker exec mysql_prod_container sh -c "exec mysql -u root -padmin123 db_admin < /tmp/db_admin.sql"
+                    # echo "Import dump ke database production..."
+                    # docker exec mysql_prod_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin; SHOW DATABASES; USE db_admin;"
+                    # docker exec mysql_prod_container sh -c "exec mysql -u root -padmin123 db_admin < /tmp/db_admin.sql"
