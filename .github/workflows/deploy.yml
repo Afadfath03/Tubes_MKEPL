@@ -22,6 +22,7 @@ jobs:
                 password: "${{ secrets.SERVER_PASSWORD }}"
                 script: |
                     echo "Konek ke server..."
+                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S -u root bash
                     
                     echo "masuk ke folder Tubes_MKEPL..."
                     cd /home/afadfath/Tubes_MKEPL
