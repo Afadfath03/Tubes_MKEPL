@@ -23,14 +23,20 @@ jobs:
                 script: |
                     echo "Konek ke server..."
                     
-                    echo "masuk ke folder test-cicd..."
-                    
-                    if [ ! -d "/home/afadfath/tubes_mkepl/.git" ]; then
-                      git clone https://github.com/afadfath/tubes_mkepl.git /home/afadfath/tubes_mkepl
+                    echo "masuk ke folder Tubes_MKEPL..."
+                    cd /home/afadfath/Tubes_MKEPL
+
+                    echo "Check apakah branch sesuai..."
+                    current_branch=$(git rev-parse --abbrev-ref HEAD)
+                    if [ "$current_branch" != "master" ]; then
+                        echo "Branch saat ini adalah $current_branch, bukan master. Proses deploy dibatalkan."
+                        exit 1
                     else
-                      cd /home/afadfath/tubes_mkepl
-                      git pull
+                        echo "Branch saat ini adalah $current_branch, melanjutkan proses deploy..."
                     fi
+
+                    echo "Pull kode terbaru dari repository..."
+                    git pull origin master
                     
                     echo "docker compse down if running..."
                     docker compose down
