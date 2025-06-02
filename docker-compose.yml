@@ -20,8 +20,7 @@ services:
       MYSQL_DATABASE: mkepl_task-management
       MYSQL_PASSWORD: admin123
     ports:
-      # post mysql
-      - "5501:5501"
+      - "5501:3306"
 
   # PHPMYADMIN
   phpmyadmin:
@@ -30,7 +29,6 @@ services:
       # akses ke database
       - mysql-db
     ports:
-      # port mysql-db
       - "5502:5502"
     environment:
       # Phpmyadmin jadi host database
