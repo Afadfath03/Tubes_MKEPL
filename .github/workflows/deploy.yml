@@ -62,6 +62,13 @@ jobs:
                   cd /home/afadfath/Tubes_MKEPL
 
                   echo "(LOG) Dumping Development Database..."
+                  
+                  # cek direktori dump
+                  if [ ! -d "/home/afadfath/Tubes_MKEPL/mysql/dump" ]; then
+                      echo "(LOG) Directory /home/afadfath/Tubes_MKEPL/mysql/dump tidak ada. akan dibuat."
+                      mkdir -p /home/afadfath/Tubes_MKEPL/mysql/dump
+                  fi
+
                   docker exec tubes_mkepl-mysql-db-1 mysqldump -u ${{secrets.MYSQL_USER}} -p${{secrets.MYSQL_ROOT_PASSWORD}} --no-create-db --no-create-info ${{secrets.DEV_DB_NAME}} > /home/afadfath/Tubes_MKEPL/mysql/dump/db_devel_dump.sql
 
                   echo "(LOG) Restoring to Production..."
