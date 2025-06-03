@@ -16,7 +16,6 @@ services:
       - "7001:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root1234
-      MYSQL_DATABASE: mkepl_task-management_devel
 
   node:
     build: ./node
@@ -29,4 +28,4 @@ services:
       DB_HOST: mysql-db
       MYSQL_USER: root
       MYSQL_PASSWORD: root1234
-      MYSQL_DATABASE: mkepl_task-management_devel
+      MYSQL_DATABASE: mkepl_task-management
