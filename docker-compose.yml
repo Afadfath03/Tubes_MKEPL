@@ -29,3 +29,6 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root1234
       MYSQL_DATABASE: mkepl_task-management
+
+volumes:
+  - ./mysql/dump:/dump
