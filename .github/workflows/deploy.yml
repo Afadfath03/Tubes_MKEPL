@@ -70,9 +70,9 @@ jobs:
                   fi
 
                   # Dump database dari dalam container ke file di host
-                  docker exec tubes_mkepl-mysql-db-1 mysqldump -u ${{secrets.MYSQL_USER}} -p${{secrets.MYSQL_ROOT_PASSWORD}} --no-create-db --no-create-info ${{secrets.DEV_DB_NAME}} > mysql/dump/db_devel_dump.sql
+                  sudo docker exec tubes_mkepl-mysql-db-1 mysqldump -u ${{secrets.MYSQL_USER}} -p${{secrets.MYSQL_ROOT_PASSWORD}} --no-create-db --no-create-info ${{secrets.DEV_DB_NAME}} > mysql/dump/db_devel_dump.sql
 
                   echo "(LOG) Restoring to Production..."
-                  cat mysql/dump/db_devel_dump.sql | docker exec -i tubes_mkepl-mysql-db-1 mysql -u ${{secrets.MYSQL_USER}} -p${{secrets.MYSQL_ROOT_PASSWORD}} ${{secrets.PROD_DB_NAME}}
+                  sudo cat mysql/dump/db_devel_dump.sql | docker exec -i tubes_mkepl-mysql-db-1 mysql -u ${{secrets.MYSQL_USER}} -p${{secrets.MYSQL_ROOT_PASSWORD}} ${{secrets.PROD_DB_NAME}}
 
                   echo "(LOG) Database dump and restore completed."
