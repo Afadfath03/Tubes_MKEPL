@@ -32,7 +32,7 @@ jobs:
 
                   if [ ! -d ".git" ]; then
                       echo "(LOG) directory .git tidak ditemukan. cloning..."
-                      git clone https://github.com/Afadfath03/MKEPL_CI-CD-Deployment.git .
+                      git clone https://github.com/Afadfath03/Tubes_MKEPL .
                   fi
 
                   echo "(LOG) Update repo..."
