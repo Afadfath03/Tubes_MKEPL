@@ -14,14 +14,6 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v4
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                node-version: '18'
-
-            - name: Install dependencies
-              run: npm install
-
             - name: SSH Connect
               uses: appleboy/ssh-action@v1
               with:
@@ -29,42 +21,56 @@ jobs:
                 username: ${{ secrets.SERVER_USERNAME }}
                 password: "${{ secrets.SERVER_PASSWORD }}"
                 script: |
-                    echo "Konek ke server..."
-                    cd /home/afadfath/Tubes_MKEPL
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S git config --global --add safe.directory /home/afadfath/Tubes_MKEPL
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S git pull
-                    ls -la
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose down
-                    echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose up -d
-                    
-                    # Jalankan Node.js server
-                    echo "Menjalankan server Node.js..."
-                    nohup node server.js > node_server.log 2>&1 &
+                  echo "(LOG) Konek..."
 
-                    # # CI (Continuous Integration) untuk database
-                    # echo "Menunggu MySQL untuk siap..."
-                    # sleep 10
-                    
-                    # echo "cek container mysql_devel..."
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
+                  if [ ! -d "/home/afadfath/Tubes_MKEPL" ]; then
+                      echo "(LOG) Directory /home/afadfath/Tubes_MKEPL tidak ada. akan dibuat."
+                      mkdir -p /home/afadfath/Tubes_MKEPL
+                  fi
 
-                    # # Init database development
-                    # echo "Inisialisasi database development..."
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin_devel; USE db_admin_devel;"
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));"
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "INSERT INTO users (name) VALUES ('Afad Fath');"
+                  cd /home/afadfath/Tubes_MKEPL
 
-                    # echo "Cek database di development..."
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "SHOW DATABASES;"
-                    # docker exec mysql_devel_container mysql -u root -padmin123 -e "USE db_admin_devel; SHOW TABLES;"
+                  if [ ! -d ".git" ]; then
+                      echo "(LOG) directory .git tidak ditemukan. cloning..."
+                      git clone https://github.com/Afadfath03/MKEPL_CI-CD-Deployment.git .
+                  fi
 
-                    # # CD (Continuous Deployment) untuk database
-                    # echo "Dump database dari development..."
-                    # docker exec mysql_devel_container mysqldump -u root -padmin123 --databases db_admin_devel > /home/afadfath/test-cicd/db_admin_devel.sql
-                    
-                    # echo "Copy dump file ke server production..."
-                    # docker cp /home/afadfath/test-cicd/db_admin_devel.sql mysql_prod_container:/tmp/db_admin.sql
+                  echo "(LOG) Update repo..."
+                  git pull
+                  git checkout master
 
-                    # echo "Import dump ke database production..."
-                    # docker exec mysql_prod_container mysql -u root -padmin123 -e "CREATE DATABASE IF NOT EXISTS db_admin; SHOW DATABASES; USE db_admin;"
-                    # docker exec mysql_prod_container sh -c "exec mysql -u root -padmin123 db_admin < /tmp/db_admin.sql"
+                  echo "(LOG) compose down..."
+                  docker compose down
+                  
+                  echo "(LOG) compose up..."
+                  docker compose up -d --build
+                  
+                  echo "(LOG) Deployment selesai."
+
+            - name: Dump Database from Development to Production
+              uses: appleboy/ssh-action@v1
+              with:
+                host: ${{ secrets.SERVER_HOST }}
+                username: ${{ secrets.SERVER_USERNAME }}
+                password: ${{ secrets.SERVER_PASSWORD }}
+                script: |
+                  echo "(LOG) Konek..."  
+                  if [ ! -d "/home/afadfath/Tubes_MKEPL" ]; then
+                      echo "(LOG) Directory /home/afadfath/Tubes_MKEPL tidak ada. akan dibuat."
+                      mkdir -p /home/afadfath/Tubes_MKEPL
+                  fi
+                  cd /home/afadfath/Tubes_MKEPL
+
+                  echo "(LOG) Setting up MySQL credentials..."
+                  MYSQL_USER = ${{secrets.MYSQL_USER}}
+                  MYSQL_PASSWORD = ${{secrets.MYSQL_ROOT_PASSWORD}}
+                  DB_Dev = ${{secrets.DEV_DB_NAME}}
+                  DB_Prod = ${{secrets.PROD_DB_NAME}}
+
+                  echo "(LOG) Dumping Development Database..."
+                  mysqldump -u $MYSQL_USER -p$MYSQL_PASSWORD --no-create-db --no-create-info $DB_Dev > /home/afadfath/Tubes_MKEPL/db_devel_dump.sql
+
+                  echo "(LOG) Restoring to Production..."
+                  mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $DB_Prod < /home/afadfath/Tubes_MKEPL/db_devel_dump.sql
+
+                  echo "(LOG) Database dump and restore completed."
