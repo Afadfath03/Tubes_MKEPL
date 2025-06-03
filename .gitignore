@@ -3,10 +3,6 @@ node/node_modules/
 node/package-lock.json
 node/.env
 
-# PHP
-php/vendor/
-php/.env
-
 # MySQL
 mysql/*.pid
 mysql/*.sock

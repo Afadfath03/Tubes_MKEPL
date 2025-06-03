@@ -1,12 +1,17 @@
 services:
   php:
-    build: ./php 
+    build: ./php
     ports:
-      - "7000:80"
+      - "7002:80"
+    depends_on:
+      - mysql-db
+    environment:
+      DB_HOST: mysql-db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root1234
 
   mysql-db:
     build: ./mysql
-    restart: always
     ports:
       - "7001:3306"
     environment:
@@ -15,23 +20,13 @@ services:
       MYSQL_PASSWORD: root1234
       MYSQL_DATABASE: mkepl_task-management_devel
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    ports:
-      - "7002:80"
-    environment:
-      PMA_HOST: mysql-db
-      MYSQL_ROOT_PASSWORD: root1234
-    depends_on:
-      - mysql-db
-
   node:
     build: ./node
     ports:
       - "7003:3000"
     depends_on:
-      - php
       - mysql-db
+      - php
     environment:
       DB_HOST: mysql-db
       MYSQL_USER: root
